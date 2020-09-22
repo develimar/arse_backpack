@@ -2,12 +2,18 @@
 
 namespace App;
 
+use Backpack\CRUD\app\Notifications\ResetPasswordNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Backpack\CRUD\app\Models\Traits\CrudTrait;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
+
+    use CrudTrait;
+    use HasRoles;
     use Notifiable;
 
     /**
@@ -36,4 +42,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
+    }
 }
